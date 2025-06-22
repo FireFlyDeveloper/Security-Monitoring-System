@@ -46,3 +46,41 @@ export const createUser = async () => {
     return false;
   }
 };
+
+export const getUser = async (
+  username,
+  password,
+) => {
+  try {
+    const result = await pool.query(
+      "SELECT password FROM users WHERE username = $1",
+      [username],
+    );
+    if (result.rows.length > 0) {
+      const hashedPassword = result.rows[0].password;
+      const isMatch = await verifyPassword(password, hashedPassword);
+      return isMatch;
+    }
+    return false;
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    return false;
+  }
+};
+
+export const updateUser = async (
+  username,
+  password,
+) => {
+  const hashedPassword = await hashPassword(password);
+  try {
+    await pool.query("UPDATE users SET password = $1 WHERE username = $2", [
+      hashedPassword,
+      username,
+    ]);
+    return true;
+  } catch (error) {
+    console.error("Error updating user:", error);
+    return false;
+  }
+};
