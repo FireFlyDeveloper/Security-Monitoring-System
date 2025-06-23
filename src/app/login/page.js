@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import "../globals.css";
+import Image from "next/image";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -23,10 +24,12 @@ export default function LoginPage() {
       {/* University Header */}
       <header className="bg-[#b30000] py-3 px-6 shadow-md">
         <div className="max-w-6xl mx-auto flex items-center">
-          <img
+          <Image
             src="/batstateu-logo.png"
             alt="Batangas State University Logo"
             className="h-12 mr-4"
+            width={55}
+            height={50}
           />
           <div>
             <h2 className="font-bold text-white">Batangas State University</h2>
