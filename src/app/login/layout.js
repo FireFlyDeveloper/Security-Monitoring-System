@@ -5,7 +5,7 @@ export default function LoginLayout({ children }) {
         <title>Login</title>
       </head>
       <body>
-        <div className="login-layout">
+        <div>
           {children}
         </div>
       </body>
