@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import '../globals.css';
 
-const Login = () => {
+export default function Login() {
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   const togglePassword = () => {
@@ -118,5 +118,3 @@ const Login = () => {
     </div>
   );
 };
-
-export default Login;
