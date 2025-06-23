@@ -10,12 +10,29 @@ export default function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Example logic: replace this with actual API/authentication call
-    if (username === "admin" && password === "admin123") {
-      alert("Login successful!");
-      // Redirect to dashboard or store token here
-    } else {
-      alert("Invalid credentials. Please try again.");
+    if (!username || !password) {
+      alert("Please enter both username and password.");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:8080/auth/user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (!response.ok) {
+        alert("Login failed. Please check your credentials.");
+        return;
+      }
+
+      window.location.href = "/dashboard";
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("An error occurred while trying to log in. Please try again later.");
     }
   };
 
