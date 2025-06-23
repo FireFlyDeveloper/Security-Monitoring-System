@@ -1,3 +1,4 @@
+import Image from "next/image";
 import "./globals.css";
 
 export default function Home() {
@@ -6,7 +7,7 @@ export default function Home() {
       {/* University Header */}
       <header className="bg-[#b30000] py-3 px-6 shadow-md">
         <div className="max-w-6xl mx-auto flex items-center">
-          <img 
+          <Image 
             src="/batstateu-logo.png" 
             alt="Batangas State University Logo" 
             className="h-12 mr-4"
@@ -201,7 +202,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center mb-4 md:mb-0">
-              <img 
+              <Image 
                 src="/batstateu-logo.png" 
                 alt="Batangas State University Logo" 
                 className="h-8 mr-3"
