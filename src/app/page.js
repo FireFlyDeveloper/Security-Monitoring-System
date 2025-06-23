@@ -11,6 +11,8 @@ export default function Home() {
             src="/batstateu-logo.png" 
             alt="Batangas State University Logo" 
             className="h-12 mr-4"
+            width={55}
+            height={50}
           />
           <div>
             <h2 className="font-bold text-white">Batangas State University</h2>
@@ -206,6 +208,8 @@ export default function Home() {
                 src="/batstateu-logo.png" 
                 alt="Batangas State University Logo" 
                 className="h-8 mr-3"
+                width={40}
+                height={43}
               />
               <span className="text-sm text-gray-400">Monitoring System</span>
             </div>
