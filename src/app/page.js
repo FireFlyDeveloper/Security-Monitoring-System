@@ -60,7 +60,7 @@ export default function Home() {
           </motion.div>
           <motion.div variants={itemVariants}>
             <h2 className="font-bold text-white">Batangas State University</h2>
-            <p className="text-sm text-red-100">Monitoring System</p>
+            <p className="text-sm text-red-100">Laptop Position Monitoring System</p>
           </motion.div>
         </div>
       </motion.header>
@@ -336,7 +336,7 @@ export default function Home() {
                 width={40}
                 height={43}
               />
-              <span className="text-sm text-gray-400">Monitoring System</span>
+              <span className="text-sm text-gray-400">Laptop Position Monitoring System</span>
             </motion.div>
             <motion.div 
               className="text-sm text-gray-500"

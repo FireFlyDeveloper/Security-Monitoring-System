@@ -88,7 +88,7 @@ export default function LoginPage() {
           </motion.div>
           <motion.div variants={itemVariants}>
             <h2 className="font-bold text-white">Batangas State University</h2>
-            <p className="text-sm text-red-100">Monitoring System</p>
+            <p className="text-sm text-red-100">Laptop Position Monitoring System</p>
           </motion.div>
         </div>
       </motion.header>
