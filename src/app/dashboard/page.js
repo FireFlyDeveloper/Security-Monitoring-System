@@ -5,6 +5,7 @@ import Image from "next/image";
 import "../globals.css";
 
 export default function Dashboard() {
+  const [isMounted, setIsMounted] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [devices, setDevices] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -20,16 +21,19 @@ export default function Dashboard() {
     //   { id: 3, name: 'Laptop-03', mac: '00:1A:2B:3C:4D:5G', lastUpdated: '10 mins ago', status: 'critical', monitoring: true },
     //   { id: 4, name: 'Laptop-04', mac: '00:1A:2B:3C:4D:5H', lastUpdated: '1 min ago', status: 'resolved', monitoring: true },
     // ];
-    const fetchDevices = async () => {
-      const response = await fetch('/api/device/getdevice');
-      if (response.ok) {
-        const data = await response.json();
-        setDevices(data.devices || []);
-      }
-    };
+    if (!isMounted) {
+      const fetchDevices = async () => {
+        const response = await fetch('/api/device/getdevice');
+        if (response.ok) {
+          const data = await response.json();
+          setDevices(data.devices || []);
+        }
+        setIsMounted(true);
+      };
 
-    fetchDevices();
-  }, [devices]);
+      fetchDevices();
+    }
+  }, []);
 
   // Animation variants
   const containerVariants = {
