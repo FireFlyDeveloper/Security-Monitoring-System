@@ -1,22 +1,36 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from "next/image";
 import "../globals.css";
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [devices, setDevices] = useState([
-    { id: 1, name: 'Laptop-01', mac: '00:1A:2B:3C:4D:5E', lastUpdated: '2 mins ago', status: 'in-position', monitoring: true },
-    { id: 2, name: 'Laptop-02', mac: '00:1A:2B:3C:4D:5F', lastUpdated: '5 mins ago', status: 'warning', monitoring: true },
-    { id: 3, name: 'Laptop-03', mac: '00:1A:2B:3C:4D:5G', lastUpdated: '10 mins ago', status: 'critical', monitoring: true },
-    { id: 4, name: 'Laptop-04', mac: '00:1A:2B:3C:4D:5H', lastUpdated: '1 min ago', status: 'resolved', monitoring: true },
-  ]);
+  const [devices, setDevices] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showConfirmRemove, setShowConfirmRemove] = useState(null);
   const [showConfirmCalibrate, setShowConfirmCalibrate] = useState(null);
   const [editingDevice, setEditingDevice] = useState(null);
   const [newDevice, setNewDevice] = useState({ name: '', mac: '' });
+
+  useEffect(() => {
+    // const response = [
+    //   { id: 1, name: 'Laptop-01', mac: '00:1A:2B:3C:4D:5E', lastUpdated: '2 mins ago', status: 'in-position', monitoring: true },
+    //   { id: 2, name: 'Laptop-02', mac: '00:1A:2B:3C:4D:5F', lastUpdated: '5 mins ago', status: 'warning', monitoring: true },
+    //   { id: 3, name: 'Laptop-03', mac: '00:1A:2B:3C:4D:5G', lastUpdated: '10 mins ago', status: 'critical', monitoring: true },
+    //   { id: 4, name: 'Laptop-04', mac: '00:1A:2B:3C:4D:5H', lastUpdated: '1 min ago', status: 'resolved', monitoring: true },
+    // ];
+    const fetchDevices = async () => {
+      const response = await fetch('/api/device/getdevice');
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Fetched devices:", data);
+        setDevices(data || []);
+      }
+    };
+
+    fetchDevices();
+  }, [devices]);
 
   // Animation variants
   const containerVariants = {
@@ -44,7 +58,7 @@ export default function Dashboard() {
   };
 
   const toggleMonitoring = (id) => {
-    setDevices(devices.map(device => 
+    setDevices(devices.map(device =>
       device.id === id ? { ...device, monitoring: !device.monitoring } : device
     ));
   };
@@ -55,14 +69,14 @@ export default function Dashboard() {
   };
 
   const calibrateDevice = (id) => {
-    setDevices(devices.map(device => 
+    setDevices(devices.map(device =>
       device.id === id ? { ...device, lastUpdated: 'Just now', status: 'in-position' } : device
     ));
     setShowConfirmCalibrate(null);
   };
 
   const saveEdit = () => {
-    setDevices(devices.map(device => 
+    setDevices(devices.map(device =>
       device.id === editingDevice.id ? { ...device, name: editingDevice.name } : device
     ));
     setEditingDevice(null);
@@ -83,7 +97,7 @@ export default function Dashboard() {
   };
 
   const resolveDevice = (id) => {
-    setDevices(devices.map(device => 
+    setDevices(devices.map(device =>
       device.id === id ? { ...device, status: 'resolved' } : device
     ));
   };
@@ -93,11 +107,11 @@ export default function Dashboard() {
       text: 'In Position',
       color: 'bg-green-500/20 border-green-500 text-green-400',
       icon: (
-        <motion.svg 
-          xmlns="http://www.w3.org/2000/svg" 
-          className="h-8 w-8" 
-          fill="none" 
-          viewBox="0 0 24 24" 
+        <motion.svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-8 w-8"
+          fill="none"
+          viewBox="0 0 24 24"
           stroke="currentColor"
           animate={{ scale: [1, 1.1, 1] }}
           transition={{ duration: 2, repeat: Infinity }}
@@ -110,11 +124,11 @@ export default function Dashboard() {
       text: 'Warning: Not in Position',
       color: 'bg-amber-500/20 border-amber-500 text-amber-400',
       icon: (
-        <motion.svg 
-          xmlns="http://www.w3.org/2000/svg" 
-          className="h-8 w-8" 
-          fill="none" 
-          viewBox="0 0 24 24" 
+        <motion.svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-8 w-8"
+          fill="none"
+          viewBox="0 0 24 24"
           stroke="currentColor"
           animate={{ rotate: [0, -5, 5, 0] }}
           transition={{ duration: 1, repeat: Infinity }}
@@ -127,11 +141,11 @@ export default function Dashboard() {
       text: 'Critical: Not in Position',
       color: 'bg-red-500/20 border-red-500 text-red-400',
       icon: (
-        <motion.svg 
-          xmlns="http://www.w3.org/2000/svg" 
-          className="h-8 w-8" 
-          fill="none" 
-          viewBox="0 0 24 24" 
+        <motion.svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-8 w-8"
+          fill="none"
+          viewBox="0 0 24 24"
           stroke="currentColor"
           animate={{ scale: [1, 1.2, 1] }}
           transition={{ duration: 0.5, repeat: Infinity }}
@@ -144,13 +158,13 @@ export default function Dashboard() {
       text: 'Resolved: Back in Position',
       color: 'bg-blue-500/20 border-blue-500 text-blue-400',
       icon: (
-        <motion.svg 
-          xmlns="http://www.w3.org/2000/svg" 
-          className="h-8 w-8" 
-          fill="none" 
-          viewBox="0 0 24 24" 
+        <motion.svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-8 w-8"
+          fill="none"
+          viewBox="0 0 24 24"
           stroke="currentColor"
-          animate={{ 
+          animate={{
             pathLength: [0, 1],
             opacity: [0, 1]
           }}
@@ -163,14 +177,14 @@ export default function Dashboard() {
   };
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
       className="min-h-screen bg-gray-950 text-gray-100 flex flex-col"
     >
       {/* University Header */}
-      <motion.header 
+      <motion.header
         initial={{ y: -20 }}
         animate={{ y: 0 }}
         transition={{ type: "spring", stiffness: 100 }}
@@ -178,9 +192,9 @@ export default function Dashboard() {
       >
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center">
-            <Image 
-              src="/batstateu-logo.png" 
-              alt="Batangas State University Logo" 
+            <Image
+              src="/batstateu-logo.png"
+              alt="Batangas State University Logo"
               className="h-12 mr-4"
               width={55}
               height={50}
@@ -190,12 +204,12 @@ export default function Dashboard() {
               <p className="text-sm text-red-100">Laptop Position Monitoring System</p>
             </div>
           </div>
-          <motion.div 
+          <motion.div
             className="flex items-center space-x-4"
             whileHover={{ scale: 1.05 }}
           >
             <span className="text-sm text-red-100">Admin Dashboard</span>
-            <motion.button 
+            <motion.button
               className="p-2 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700"
               whileHover={{ rotate: 15 }}
               whileTap={{ scale: 0.9 }}
@@ -211,7 +225,7 @@ export default function Dashboard() {
       {/* Main Content */}
       <div className="flex flex-1">
         {/* Sidebar Navigation */}
-        <motion.nav 
+        <motion.nav
           initial={{ x: -50 }}
           animate={{ x: 0 }}
           transition={{ type: "spring", stiffness: 100 }}
@@ -222,9 +236,8 @@ export default function Dashboard() {
               <motion.button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`w-full flex items-center px-4 py-3 rounded-lg ${
-                  activeTab === tab ? 'bg-red-900/50 text-red-300' : 'text-gray-400 hover:bg-gray-800 hover:text-gray-200'
-                }`}
+                className={`w-full flex items-center px-4 py-3 rounded-lg ${activeTab === tab ? 'bg-red-900/50 text-red-300' : 'text-gray-400 hover:bg-gray-800 hover:text-gray-200'
+                  }`}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
@@ -248,7 +261,7 @@ export default function Dashboard() {
         {/* Main Dashboard Content */}
         <main className="flex-1 p-8 max-w-6xl mx-auto">
           <div className="flex justify-between items-center mb-8">
-            <motion.h1 
+            <motion.h1
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
@@ -256,7 +269,7 @@ export default function Dashboard() {
             >
               Laptop Position Monitoring
             </motion.h1>
-            <motion.button 
+            <motion.button
               onClick={() => setShowAddModal(true)}
               className="px-6 py-3 bg-red-600 hover:bg-red-700 rounded-lg flex items-center text-white font-medium transition-colors"
               whileHover={{ scale: 1.05 }}
@@ -270,14 +283,14 @@ export default function Dashboard() {
           </div>
 
           {/* Devices Grid */}
-          <motion.div 
+          <motion.div
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
           >
             {devices.map((device) => (
-              <motion.div 
+              <motion.div
                 key={device.id}
                 className="bg-gray-900 p-6 rounded-xl border border-gray-800 shadow-lg"
                 variants={itemVariants}
@@ -298,7 +311,7 @@ export default function Dashboard() {
                           <input
                             type="text"
                             value={editingDevice.name}
-                            onChange={(e) => setEditingDevice({...editingDevice, name: e.target.value})}
+                            onChange={(e) => setEditingDevice({ ...editingDevice, name: e.target.value })}
                             className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-red-500 text-center"
                           />
                         ) : (
@@ -334,18 +347,16 @@ export default function Dashboard() {
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                           </svg>
-                          Monitoring: 
+                          Monitoring:
                           <motion.button
                             onClick={() => toggleMonitoring(device.id)}
-                            className={`relative inline-flex h-5 w-9 ml-2 items-center rounded-full ${
-                              device.monitoring ? 'bg-red-600' : 'bg-gray-600'
-                            }`}
+                            className={`relative inline-flex h-5 w-9 ml-2 items-center rounded-full ${device.monitoring ? 'bg-red-600' : 'bg-gray-600'
+                              }`}
                             whileTap={{ scale: 0.9 }}
                           >
                             <motion.span
-                              className={`inline-block h-3 w-3 transform rounded-full bg-white transition ${
-                                device.monitoring ? 'translate-x-5' : 'translate-x-1'
-                              }`}
+                              className={`inline-block h-3 w-3 transform rounded-full bg-white transition ${device.monitoring ? 'translate-x-5' : 'translate-x-1'
+                                }`}
                               layout
                               transition={{ type: "spring", stiffness: 500, damping: 30 }}
                             />
@@ -357,7 +368,7 @@ export default function Dashboard() {
                     <div className="mt-4 flex justify-center space-x-3">
                       {editingDevice?.id === device.id ? (
                         <>
-                          <motion.button 
+                          <motion.button
                             onClick={saveEdit}
                             className="px-3 py-1 text-sm text-blue-400 hover:text-blue-300 rounded-lg"
                             whileHover={{ scale: 1.1 }}
@@ -365,7 +376,7 @@ export default function Dashboard() {
                           >
                             Save
                           </motion.button>
-                          <motion.button 
+                          <motion.button
                             onClick={() => setEditingDevice(null)}
                             className="px-3 py-1 text-sm text-gray-400 hover:text-gray-300 rounded-lg"
                             whileHover={{ scale: 1.1 }}
@@ -376,7 +387,7 @@ export default function Dashboard() {
                         </>
                       ) : (
                         <>
-                          <motion.button 
+                          <motion.button
                             title="Edit"
                             onClick={() => setEditingDevice(device)}
                             className="px-3 py-1 text-sm text-blue-400 hover:text-blue-300"
@@ -388,7 +399,7 @@ export default function Dashboard() {
                             </svg>
                           </motion.button>
                           {(device.status === 'warning' || device.status === 'critical') && (
-                            <motion.button 
+                            <motion.button
                               title="Resolve"
                               onClick={() => resolveDevice(device.id)}
                               className="px-3 py-1 text-sm text-green-400 hover:text-green-300"
@@ -400,7 +411,7 @@ export default function Dashboard() {
                               </svg>
                             </motion.button>
                           )}
-                          <motion.button 
+                          <motion.button
                             title="Calibrate"
                             onClick={() => setShowConfirmCalibrate(device.id)}
                             className="px-3 py-1 text-sm text-amber-400 hover:text-amber-300"
@@ -411,7 +422,7 @@ export default function Dashboard() {
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m6 4v2m0-2V4" />
                             </svg>
                           </motion.button>
-                          <motion.button 
+                          <motion.button
                             title="Remove"
                             onClick={() => setShowConfirmRemove(device.id)}
                             className="px-3 py-1 text-sm text-red-400 hover:text-red-300"
@@ -436,13 +447,13 @@ export default function Dashboard() {
       {/* Add Device Modal */}
       <AnimatePresence>
         {showAddModal && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
           >
-            <motion.div 
+            <motion.div
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
@@ -450,7 +461,7 @@ export default function Dashboard() {
               className="bg-gray-900 rounded-xl border border-gray-800 p-8 w-full max-w-md shadow-lg"
             >
               <div className="flex justify-between items-center mb-6">
-                <motion.h3 
+                <motion.h3
                   className="text-xl font-bold text-gray-100"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -458,7 +469,7 @@ export default function Dashboard() {
                 >
                   Add New Laptop
                 </motion.h3>
-                <motion.button 
+                <motion.button
                   onClick={() => setShowAddModal(false)}
                   className="text-gray-400 hover:text-gray-300"
                   whileHover={{ rotate: 90 }}
@@ -469,7 +480,7 @@ export default function Dashboard() {
                   </svg>
                 </motion.button>
               </div>
-              <motion.div 
+              <motion.div
                 className="space-y-6"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -480,7 +491,7 @@ export default function Dashboard() {
                   <motion.input
                     type="text"
                     value={newDevice.name}
-                    onChange={(e) => setNewDevice({...newDevice, name: e.target.value})}
+                    onChange={(e) => setNewDevice({ ...newDevice, name: e.target.value })}
                     className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                     placeholder="e.g., Laptop-05"
                     whileFocus={{ scale: 1.01 }}
@@ -491,14 +502,14 @@ export default function Dashboard() {
                   <motion.input
                     type="text"
                     value={newDevice.mac}
-                    onChange={(e) => setNewDevice({...newDevice, mac: e.target.value})}
+                    onChange={(e) => setNewDevice({ ...newDevice, mac: e.target.value })}
                     className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                     placeholder="e.g., 00:1A:2B:3C:4D:5H"
                     whileFocus={{ scale: 1.01 }}
                   />
                 </div>
               </motion.div>
-              <motion.div 
+              <motion.div
                 className="mt-8 flex justify-end space-x-4"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -530,32 +541,32 @@ export default function Dashboard() {
       {/* Remove Confirmation Modal */}
       <AnimatePresence>
         {showConfirmRemove && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
           >
-            <motion.div 
+            <motion.div
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
               transition={{ type: "spring", damping: 20 }}
               className="bg-gray-900 rounded-xl border border-gray-800 p-8 w-full max-w-md shadow-lg"
             >
-              <motion.div 
+              <motion.div
                 className="text-center"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
               >
-                <motion.svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  className="h-12 w-12 mx-auto text-red-500" 
-                  fill="none" 
-                  viewBox="0 0 24 24" 
+                <motion.svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-12 w-12 mx-auto text-red-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
                   stroke="currentColor"
-                  animate={{ 
+                  animate={{
                     rotate: [0, -10, 10, 0],
                     scale: [1, 1.1, 1]
                   }}
@@ -563,14 +574,14 @@ export default function Dashboard() {
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </motion.svg>
-                <motion.h3 
+                <motion.h3
                   className="mt-4 text-xl font-bold text-gray-100"
                   initial={{ y: -10 }}
                   animate={{ y: 0 }}
                 >
                   Remove Laptop
                 </motion.h3>
-                <motion.p 
+                <motion.p
                   className="mt-3 text-gray-400"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -579,7 +590,7 @@ export default function Dashboard() {
                   Are you sure you want to remove this laptop? This action cannot be undone.
                 </motion.p>
               </motion.div>
-              <motion.div 
+              <motion.div
                 className="mt-8 flex justify-center space-x-4"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -610,32 +621,32 @@ export default function Dashboard() {
       {/* Calibrate Confirmation Modal */}
       <AnimatePresence>
         {showConfirmCalibrate && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
           >
-            <motion.div 
+            <motion.div
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
               transition={{ type: "spring", damping: 20 }}
               className="bg-gray-900 rounded-xl border border-gray-800 p-8 w-full max-w-md shadow-lg"
             >
-              <motion.div 
+              <motion.div
                 className="text-center"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
               >
-                <motion.svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  className="h-12 w-12 mx-auto text-amber-500" 
-                  fill="none" 
-                  viewBox="0 0 24 24" 
+                <motion.svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-12 w-12 mx-auto text-amber-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
                   stroke="currentColor"
-                  animate={{ 
+                  animate={{
                     rotate: [0, 360],
                     scale: [1, 1.2, 1]
                   }}
@@ -643,14 +654,14 @@ export default function Dashboard() {
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </motion.svg>
-                <motion.h3 
+                <motion.h3
                   className="mt-4 text-xl font-bold text-gray-100"
                   initial={{ y: -10 }}
                   animate={{ y: 0 }}
                 >
                   Calibrate Laptop
                 </motion.h3>
-                <motion.p 
+                <motion.p
                   className="mt-3 text-gray-400"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -659,7 +670,7 @@ export default function Dashboard() {
                   This will reset the laptop's position tracking. Make sure the laptop is in its correct position before calibrating.
                 </motion.p>
               </motion.div>
-              <motion.div 
+              <motion.div
                 className="mt-8 flex justify-center space-x-4"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
