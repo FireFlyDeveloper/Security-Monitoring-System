@@ -1,8 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import "../globals.css";
 import Image from "next/image";
+import { SignIn, SignOut } from '../../utils/authClient';
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -30,7 +31,14 @@ export default function LoginPage() {
         return;
       }
 
-      window.location.href = "/dashboard";
+      const data = await response.json();
+
+      const signIn = await SignIn({ auth: { token: data.token } });
+      if (signIn) {
+        window.location.href = "/dashboard";
+      } else {
+        alert("Login failed. Please try again.");
+      }
     } catch (error) {
       console.error("Login error:", error);
       alert("An error occurred while trying to log in. Please try again later.");
