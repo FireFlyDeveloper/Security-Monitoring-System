@@ -8,7 +8,7 @@ export async function POST(request) {
       return NextResponse.json({ error: "Token required" }, { status: 400 });
     }
 
-    const expires = new Date(Date.now() + 15 * 1000);
+    const expires = new Date(Date.now() + 60 * 1000);
     const cookie = await cookies();
     cookie.set("session", token, { expires, httpOnly: true });
     cookie.set("authUserState", JSON.stringify(authUserState), { expires, httpOnly: true });
