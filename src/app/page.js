@@ -96,7 +96,7 @@ export default function Home() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4 }}
               >
-                Eliminate manual CCTV checks with our real-time tracking system for public laptops in the Internet Laboratory.
+                Track public laptop usage in real time within the Internet Laboratory to maintain security and prevent unauthorized movement.
               </motion.p>
             </div>
 
