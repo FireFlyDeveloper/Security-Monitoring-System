@@ -17,7 +17,7 @@ export async function POST() {
         "Content-Type": "application/json",
         Authorization: `Bearer ${session.value}`,
       },
-      body: JSON.stringify({ name: authUserState.name }),
+      body: JSON.stringify({ name: JSON.parse(authUserState.value).name}),
     });
 
     if (!response.ok) {
@@ -27,6 +27,7 @@ export async function POST() {
     const data = await response.json();
     const expires = new Date(Date.now() + 10 * 1000);
     cookie.set("session", data.token, { expires, httpOnly: true });
+    cookie.set("authUserState", JSON.stringify(data.authUserState), { expires, httpOnly: true });
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error refreshing token:", error);

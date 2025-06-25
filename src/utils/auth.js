@@ -26,7 +26,7 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const signIn = async ({ token, authUserState: {} }) => {
+  const signIn = async ({ token, authUserState }) => {
     try {
       const response = await fetch("/api/auth/signin", {
         method: "POST",
