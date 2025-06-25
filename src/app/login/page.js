@@ -1,10 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import "../globals.css";
 import Image from "next/image";
+import { useAuth } from "../../utils/auth";
 
 export default function LoginPage() {
+  const { signIn } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -32,7 +34,7 @@ export default function LoginPage() {
 
       const data = await response.json();
 
-      if (signIn) {
+      if (signIn({ token: data.token, authUserState })) {
         window.location.href = "/dashboard";
       } else {
         alert("Login failed. Please try again.");

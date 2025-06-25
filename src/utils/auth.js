@@ -26,12 +26,12 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const signIn = async ({ token }) => {
+  const signIn = async ({ token, authUserState: {} }) => {
     try {
       const response = await fetch("/api/auth/signin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token }),
+        body: JSON.stringify({ token, authUserState }),
       });
       if (response.ok) {
         setIsAuthenticated(true);

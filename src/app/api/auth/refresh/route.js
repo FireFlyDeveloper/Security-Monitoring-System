@@ -5,6 +5,7 @@ export async function POST() {
   try {
     const cookie = await cookies();
     const session = cookie.get("session");
+    const authUserState = cookie.get("authUserState");
     if (!session) {
       return NextResponse.json({ error: "No session" }, { status: 401 });
     }
@@ -16,6 +17,7 @@ export async function POST() {
         "Content-Type": "application/json",
         Authorization: `Bearer ${session.value}`,
       },
+      body: JSON.stringify({ name: authUserState.name }),
     });
 
     if (!response.ok) {
