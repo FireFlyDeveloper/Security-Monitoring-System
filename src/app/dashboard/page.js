@@ -15,24 +15,30 @@ export default function Dashboard() {
   const [newDevice, setNewDevice] = useState({ name: '', mac: '' });
 
   useEffect(() => {
-    // const response = [
-    //   { id: 1, name: 'Laptop-01', mac: '00:1A:2B:3C:4D:5E', lastUpdated: '2 mins ago', status: 'in-position', monitoring: true },
-    //   { id: 2, name: 'Laptop-02', mac: '00:1A:2B:3C:4D:5F', lastUpdated: '5 mins ago', status: 'warning', monitoring: true },
-    //   { id: 3, name: 'Laptop-03', mac: '00:1A:2B:3C:4D:5G', lastUpdated: '10 mins ago', status: 'critical', monitoring: true },
-    //   { id: 4, name: 'Laptop-04', mac: '00:1A:2B:3C:4D:5H', lastUpdated: '1 min ago', status: 'resolved', monitoring: true },
-    // ];
-    if (!isMounted) {
-      const fetchDevices = async () => {
+    let mounted = true;
+
+    const fetchDevices = async () => {
+      try {
         const response = await fetch('/api/device/getdevice');
+        if (!mounted) return;
+
         if (response.ok) {
           const data = await response.json();
           setDevices(data.devices || []);
+        } else {
+          console.error('Failed to fetch devices:', response.statusText);
         }
-        setIsMounted(true);
-      };
+      } catch (error) {
+        if (!mounted) return;
+        console.error('Error fetching devices:', error);
+      }
+    };
 
-      fetchDevices();
-    }
+    fetchDevices();
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   // Animation variants
