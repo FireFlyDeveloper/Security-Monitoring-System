@@ -24,8 +24,7 @@ export default function Dashboard() {
       const response = await fetch('/api/device/getdevice');
       if (response.ok) {
         const data = await response.json();
-        console.log("Fetched devices:", data);
-        setDevices(data || []);
+        setDevices(data.devices || []);
       }
     };
 
