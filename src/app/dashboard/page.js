@@ -13,7 +13,6 @@ export default function Dashboard() {
   const [editingDevice, setEditingDevice] = useState(null);
   const [newDevice, setNewDevice] = useState({ name: '', mac: '' });
   const wsRef = useRef(null);
-  const [messages, setMessages] = useState('');
 
   useEffect(() => {
     let mounted = true;
@@ -54,8 +53,19 @@ export default function Dashboard() {
     };
 
     ws.onmessage = (event) => {
-      console.log('Received:', event.data);
-      setMessages(event.data);
+      try {
+        const message = JSON.parse(event.data);
+        const { type, mac, timestamp } = message;
+        setDevices(prevDevices =>
+          prevDevices.map(device =>
+            device.mac.toLowerCase() === mac.toLowerCase()
+              ? { ...device, status: type, lastUpdated: timestamp }
+              : device
+          )
+        );
+      } catch (error) {
+        console.error('Error parsing WebSocket message:', error);
+      }
     };
 
     ws.onerror = (err) => {
