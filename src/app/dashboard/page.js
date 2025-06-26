@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from "next/image";
 import "../globals.css";
+import ActivityLogs from '../logs/page';
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -117,7 +118,7 @@ export default function Dashboard() {
       try {
         const response = await fetch("/api/device/remove", {
           method: "POST",
-          body: JSON.stringify({ ids: [ id ] }),
+          body: JSON.stringify({ ids: [id] }),
         });
 
         if (!response.ok) {
@@ -489,187 +490,193 @@ export default function Dashboard() {
 
         {/* Main Dashboard Content */}
         <main className="flex-1 p-8 max-w-6xl mx-auto">
-          <div className="flex justify-between items-center mb-8">
-            <motion.h1
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="text-3xl font-bold tracking-tight text-gray-100"
-            >
-              Laptop Position Monitoring
-            </motion.h1>
-            <motion.button
-              onClick={() => setShowAddModal(true)}
-              className="px-6 py-3 bg-red-600 hover:bg-red-700 rounded-lg flex items-center text-white font-medium transition-colors"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-              </svg>
-              Add Laptop
-            </motion.button>
-          </div>
+          {activeTab === 'dashboard' && (
+            <>
+              <div className="flex justify-between items-center mb-8">
+                <motion.h1
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                  className="text-3xl font-bold tracking-tight text-gray-100"
+                >
+                  Laptop Position Monitoring
+                </motion.h1>
+                <motion.button
+                  onClick={() => setShowAddModal(true)}
+                  className="px-6 py-3 bg-red-600 hover:bg-red-700 rounded-lg flex items-center text-white font-medium transition-colors"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                  Add Laptop
+                </motion.button>
+              </div>
 
-          {/* Devices Grid */}
-          <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-          >
-            {devices.map((device) => (
+              {/* Devices Grid */}
               <motion.div
-                key={device.id}
-                className="bg-gray-900 p-6 rounded-xl border border-gray-800 shadow-lg"
-                variants={itemVariants}
-                layout
-                transition={{ type: "spring", stiffness: 100 }}
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
               >
-                <div className="relative flex flex-col items-center">
-                  {/* Laptop visualization */}
-                  <div className="w-full max-w-xs">
-                    {/* Laptop base */}
-                    <div className="mx-auto w-3/4 bg-gray-800 rounded-lg rounded-b-none h-32 border-2 border-gray-700 border-b-0 flex items-center justify-center">
-                      <div className="text-center p-4">
-                        {/* Security status indicator */}
-                        <div className={`mx-auto mb-4 w-16 h-16 rounded-full flex items-center justify-center border-4 animate-pulse ${statusConfig[device.status].color}`}>
-                          {statusConfig[device.status].icon}
+                {devices.map((device) => (
+                  <motion.div
+                    key={device.id}
+                    className="bg-gray-900 p-6 rounded-xl border border-gray-800 shadow-lg"
+                    variants={itemVariants}
+                    layout
+                    transition={{ type: "spring", stiffness: 100 }}
+                  >
+                    <div className="relative flex flex-col items-center">
+                      {/* Laptop visualization */}
+                      <div className="w-full max-w-xs">
+                        {/* Laptop base */}
+                        <div className="mx-auto w-3/4 bg-gray-800 rounded-lg rounded-b-none h-32 border-2 border-gray-700 border-b-0 flex items-center justify-center">
+                          <div className="text-center p-4">
+                            {/* Security status indicator */}
+                            <div className={`mx-auto mb-4 w-16 h-16 rounded-full flex items-center justify-center border-4 animate-pulse ${statusConfig[device.status].color}`}>
+                              {statusConfig[device.status].icon}
+                            </div>
+                            {editingDevice?.id === device.id ? (
+                              <input
+                                type="text"
+                                value={editingDevice.name}
+                                onChange={(e) => setEditingDevice({ ...editingDevice, name: e.target.value })}
+                                className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-red-500 text-center"
+                              />
+                            ) : (
+                              <p className="text-lg font-medium text-gray-200">{device.name}</p>
+                            )}
+                            <p className="text-sm text-gray-400 mt-1">{statusConfig[device.status].text}</p>
+                          </div>
                         </div>
-                        {editingDevice?.id === device.id ? (
-                          <input
-                            type="text"
-                            value={editingDevice.name}
-                            onChange={(e) => setEditingDevice({ ...editingDevice, name: e.target.value })}
-                            className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-red-500 text-center"
-                          />
-                        ) : (
-                          <p className="text-lg font-medium text-gray-200">{device.name}</p>
-                        )}
-                        <p className="text-sm text-gray-400 mt-1">{statusConfig[device.status].text}</p>
-                      </div>
-                    </div>
-                    {/* Laptop screen */}
-                    <div className="mx-auto w-full bg-gray-700 rounded-t-lg h-6 border-2 border-gray-700 border-b-0"></div>
-                    {/* Device info */}
-                    <div className="mt-4 bg-gray-800/50 backdrop-blur-sm p-4 rounded-lg border border-gray-700">
-                      <h4 className="text-sm font-medium text-gray-300 mb-3 flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                        </svg>
-                        Device Details
-                      </h4>
-                      <ul className="space-y-2 text-sm text-gray-400">
-                        <li className="flex items-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                          </svg>
-                          MAC: {device.mac}
-                        </li>
-                        <li className="flex items-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                          </svg>
-                          Last Update: {new Date(device.lastUpdated).toLocaleString()}
-                        </li>
-                        <li className="flex items-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                          </svg>
-                          Monitoring:
-                          <motion.button
-                            onClick={() => toggleMonitoring(device.id)}
-                            className={`relative inline-flex h-5 w-9 ml-2 items-center rounded-full ${device.monitoring ? 'bg-red-600' : 'bg-gray-600'
-                              }`}
-                            whileTap={{ scale: 0.9 }}
-                          >
-                            <motion.span
-                              className={`inline-block h-3 w-3 transform rounded-full bg-white transition ${device.monitoring ? 'translate-x-5' : 'translate-x-1'
-                                }`}
-                              layout
-                              transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                            />
-                          </motion.button>
-                        </li>
-                      </ul>
-                    </div>
-                    {/* Actions */}
-                    <div className="mt-4 flex justify-center space-x-3">
-                      {editingDevice?.id === device.id ? (
-                        <>
-                          <motion.button
-                            onClick={saveEdit}
-                            className="px-3 py-1 text-sm text-blue-400 hover:text-blue-300 rounded-lg"
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                          >
-                            Save
-                          </motion.button>
-                          <motion.button
-                            onClick={() => setEditingDevice(null)}
-                            className="px-3 py-1 text-sm text-gray-400 hover:text-gray-300 rounded-lg"
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                          >
-                            Cancel
-                          </motion.button>
-                        </>
-                      ) : (
-                        <>
-                          <motion.button
-                            title="Edit"
-                            onClick={() => setEditingDevice(device)}
-                            className="px-3 py-1 text-sm text-blue-400 hover:text-blue-300"
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        {/* Laptop screen */}
+                        <div className="mx-auto w-full bg-gray-700 rounded-t-lg h-6 border-2 border-gray-700 border-b-0"></div>
+                        {/* Device info */}
+                        <div className="mt-4 bg-gray-800/50 backdrop-blur-sm p-4 rounded-lg border border-gray-700">
+                          <h4 className="text-sm font-medium text-gray-300 mb-3 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                             </svg>
-                          </motion.button>
-                          {(device.status === 'warning' || device.status === 'critical') && (
-                            <motion.button
-                              title="Resolve"
-                              onClick={() => resolveDevice(device.id)}
-                              className="px-3 py-1 text-sm text-green-400 hover:text-green-300"
-                              whileHover={{ scale: 1.1 }}
-                              whileTap={{ scale: 0.9 }}
-                            >
-                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            Device Details
+                          </h4>
+                          <ul className="space-y-2 text-sm text-gray-400">
+                            <li className="flex items-center">
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                               </svg>
-                            </motion.button>
+                              MAC: {device.mac}
+                            </li>
+                            <li className="flex items-center">
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                              </svg>
+                              Last Update: {new Date(device.lastUpdated).toLocaleString()}
+                            </li>
+                            <li className="flex items-center">
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                              </svg>
+                              Monitoring:
+                              <motion.button
+                                onClick={() => toggleMonitoring(device.id)}
+                                className={`relative inline-flex h-5 w-9 ml-2 items-center rounded-full ${device.monitoring ? 'bg-red-600' : 'bg-gray-600'
+                                  }`}
+                                whileTap={{ scale: 0.9 }}
+                              >
+                                <motion.span
+                                  className={`inline-block h-3 w-3 transform rounded-full bg-white transition ${device.monitoring ? 'translate-x-5' : 'translate-x-1'
+                                    }`}
+                                  layout
+                                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                                />
+                              </motion.button>
+                            </li>
+                          </ul>
+                        </div>
+                        {/* Actions */}
+                        <div className="mt-4 flex justify-center space-x-3">
+                          {editingDevice?.id === device.id ? (
+                            <>
+                              <motion.button
+                                onClick={saveEdit}
+                                className="px-3 py-1 text-sm text-blue-400 hover:text-blue-300 rounded-lg"
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.9 }}
+                              >
+                                Save
+                              </motion.button>
+                              <motion.button
+                                onClick={() => setEditingDevice(null)}
+                                className="px-3 py-1 text-sm text-gray-400 hover:text-gray-300 rounded-lg"
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.9 }}
+                              >
+                                Cancel
+                              </motion.button>
+                            </>
+                          ) : (
+                            <>
+                              <motion.button
+                                title="Edit"
+                                onClick={() => setEditingDevice(device)}
+                                className="px-3 py-1 text-sm text-blue-400 hover:text-blue-300"
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.9 }}
+                              >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                </svg>
+                              </motion.button>
+                              {(device.status === 'warning' || device.status === 'critical') && (
+                                <motion.button
+                                  title="Resolve"
+                                  onClick={() => resolveDevice(device.id)}
+                                  className="px-3 py-1 text-sm text-green-400 hover:text-green-300"
+                                  whileHover={{ scale: 1.1 }}
+                                  whileTap={{ scale: 0.9 }}
+                                >
+                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                  </svg>
+                                </motion.button>
+                              )}
+                              <motion.button
+                                title="Calibrate"
+                                onClick={() => setShowConfirmCalibrate(device.id)}
+                                className="px-3 py-1 text-sm text-amber-400 hover:text-amber-300"
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.9 }}
+                              >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m6 4v2m0-2V4" />
+                                </svg>
+                              </motion.button>
+                              <motion.button
+                                title="Remove"
+                                onClick={() => setShowConfirmRemove(device.id)}
+                                className="px-3 py-1 text-sm text-red-400 hover:text-red-300"
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.9 }}
+                              >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                              </motion.button>
+                            </>
                           )}
-                          <motion.button
-                            title="Calibrate"
-                            onClick={() => setShowConfirmCalibrate(device.id)}
-                            className="px-3 py-1 text-sm text-amber-400 hover:text-amber-300"
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m6 4v2m0-2V4" />
-                            </svg>
-                          </motion.button>
-                          <motion.button
-                            title="Remove"
-                            onClick={() => setShowConfirmRemove(device.id)}
-                            className="px-3 py-1 text-sm text-red-400 hover:text-red-300"
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                          </motion.button>
-                        </>
-                      )}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
+                  </motion.div>
+                ))}
               </motion.div>
-            ))}
-          </motion.div>
+            </>
+          )}
+
+          { activeTab == 'logs' && <ActivityLogs /> }
         </main>
       </div>
 
