@@ -75,13 +75,55 @@ export default function ActivityLogs() {
   };
 
   const alertTypeDisplay = {
-    'in-position': { label: 'In Position', color: 'bg-green-500 text-green-900' },
-    warning: { label: 'Not in Position', color: 'bg-yellow-500 text-yellow-900' },
-    critical: { label: 'Offline', color: 'bg-red-500 text-red-900' },
-    training_progress: { label: 'Training Progress', color: 'bg-blue-500 text-blue-900' },
-    training_initiated: { label: 'Training Initiated', color: 'bg-cyan-500 text-cyan-900' },
-    devices_refreshed: { label: 'Devices Refreshed', color: 'bg-purple-500 text-purple-900' },
-    'not-configured': { label: 'Not Configured', color: 'bg-gray-500 text-gray-900' },
+    'in-position': { 
+      label: 'In Position', 
+      bgColor: 'bg-emerald-100',
+      textColor: 'text-emerald-800',
+      borderColor: 'border-emerald-300',
+      dotColor: 'bg-emerald-500'
+    },
+    warning: { 
+      label: 'Not in Position', 
+      bgColor: 'bg-amber-100',
+      textColor: 'text-amber-800',
+      borderColor: 'border-amber-300',
+      dotColor: 'bg-amber-500'
+    },
+    critical: { 
+      label: 'Offline', 
+      bgColor: 'bg-red-100',
+      textColor: 'text-red-800',
+      borderColor: 'border-red-300',
+      dotColor: 'bg-red-500'
+    },
+    training_progress: { 
+      label: 'Training Progress', 
+      bgColor: 'bg-blue-100',
+      textColor: 'text-blue-800',
+      borderColor: 'border-blue-300',
+      dotColor: 'bg-blue-500'
+    },
+    training_initiated: { 
+      label: 'Training Initiated', 
+      bgColor: 'bg-cyan-100',
+      textColor: 'text-cyan-800',
+      borderColor: 'border-cyan-300',
+      dotColor: 'bg-cyan-500'
+    },
+    devices_refreshed: { 
+      label: 'Devices Refreshed', 
+      bgColor: 'bg-purple-100',
+      textColor: 'text-purple-800',
+      borderColor: 'border-purple-300',
+      dotColor: 'bg-purple-500'
+    },
+    'not-configured': { 
+      label: 'Not Configured', 
+      bgColor: 'bg-gray-100',
+      textColor: 'text-gray-800',
+      borderColor: 'border-gray-300',
+      dotColor: 'bg-gray-500'
+    },
   };
 
   const containerVariants = {
@@ -101,16 +143,18 @@ export default function ActivityLogs() {
       initial="hidden"
       animate="visible"
     >
-      <h2 className="text-2xl font-bold text-gray-100 mb-6">Activity Logs</h2>
+      <h2 className="text-2xl font-bold text-white mb-6 bg-gradient-to-r from-purple-600 to-blue-500 p-4 rounded-lg">
+        Activity Logs
+      </h2>
 
       {/* Filter Controls */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row gap-4 mb-6 bg-gray-800 p-4 rounded-lg">
         <div className="flex-1">
           <label className="block text-sm font-medium text-gray-300 mb-2">Filter by Type</label>
           <select
             value={filterType}
             onChange={handleFilterTypeChange}
-            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+            className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
           >
             <option value="all">All Types</option>
             <option value="in-position">In Position</option>
@@ -128,48 +172,65 @@ export default function ActivityLogs() {
             type="date"
             value={filterDate}
             onChange={handleFilterDateChange}
-            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+            className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
           />
         </div>
       </div>
 
       {/* Alerts Table */}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto bg-gray-800 rounded-lg border border-gray-700">
         <table className="min-w-full text-gray-300">
-          <thead>
+          <thead className="bg-gray-700">
             <tr>
-              <th className="px-4 py-2 text-left">Timestamp</th>
-              <th className="px-4 py-2 text-left">Message</th>
-              <th className="px-4 py-2 text-left">Event</th>
+              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-200">Timestamp</th>
+              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-200">Message</th>
+              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-200">Event</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-gray-700">
             {alerts.length === 0 ? (
               <tr>
-                <td colSpan={3} className="px-4 py-2 text-center text-gray-400">
+                <td colSpan={3} className="px-6 py-4 text-center text-gray-400">
                   No alerts found.
                 </td>
               </tr>
             ) : (
-              alerts.map((alert) => (
-                <motion.tr
-                  key={alert.id}
-                  variants={itemVariants}
-                  className="border-t border-gray-800"
-                >
-                  <td className="px-4 py-2">{new Date(alert.created_at).toLocaleString()}</td>
-                  <td className="px-4 py-2">{alert.message || 'No message'}</td>
-                  <td className="px-4 py-2">
-                    <span
-                      className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
-                        alertTypeDisplay[alert.type]?.color || 'bg-gray-500 text-gray-900'
-                      }`}
-                    >
-                      {alertTypeDisplay[alert.type]?.label || alert.type}
-                    </span>
-                  </td>
-                </motion.tr>
-              ))
+              alerts.map((alert) => {
+                const alertType = alertTypeDisplay[alert.type] || {
+                  bgColor: 'bg-gray-100',
+                  textColor: 'text-gray-800',
+                  borderColor: 'border-gray-300',
+                  dotColor: 'bg-gray-500',
+                  label: alert.type
+                };
+                
+                return (
+                  <motion.tr
+                    key={alert.id}
+                    variants={itemVariants}
+                    className="hover:bg-gray-750 transition-colors duration-150"
+                  >
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <div className={`w-2 h-2 rounded-full mr-2 ${alertType.dotColor}`}></div>
+                        <span className="text-gray-200">
+                          {new Date(alert.created_at).toLocaleString()}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="text-gray-200">{alert.message || 'No message'}</p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span
+                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${alertType.bgColor} ${alertType.textColor} border ${alertType.borderColor}`}
+                      >
+                        {alertType.label}
+                      </span>
+                    </td>
+                  </motion.tr>
+                )
+              })
             )}
           </tbody>
         </table>
@@ -177,37 +238,44 @@ export default function ActivityLogs() {
 
       {/* Pagination Controls */}
       {total > itemsPerPage && (
-        <div className="mt-6 flex justify-between items-center">
-          <p className="text-sm text-gray-400">
-            Showing {(page - 1) * itemsPerPage + 1} to{' '}
-            {Math.min(page * itemsPerPage, total)} of {total} alerts
+        <div className="mt-6 flex flex-col sm:flex-row justify-between items-center bg-gray-800 p-4 rounded-lg">
+          <p className="text-sm text-gray-400 mb-2 sm:mb-0">
+            Showing <span className="font-medium text-white">{(page - 1) * itemsPerPage + 1}</span> to{' '}
+            <span className="font-medium text-white">{Math.min(page * itemsPerPage, total)}</span> of{' '}
+            <span className="font-medium text-white">{total}</span> alerts
           </p>
           <div className="flex space-x-2">
             <motion.button
               onClick={() => handlePageChange(page - 1)}
               disabled={page === 1}
-              className={`px-4 py-2 rounded-lg ${
+              className={`px-4 py-2 rounded-lg flex items-center ${
                 page === 1
                   ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
-                  : 'bg-red-600 hover:bg-red-700 text-white'
+                  : 'bg-purple-600 hover:bg-purple-700 text-white'
               }`}
               whileHover={{ scale: page === 1 ? 1 : 1.05 }}
               whileTap={{ scale: page === 1 ? 1 : 0.95 }}
             >
+              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
               Previous
             </motion.button>
             <motion.button
               onClick={() => handlePageChange(page + 1)}
               disabled={page * itemsPerPage >= total}
-              className={`px-4 py-2 rounded-lg ${
+              className={`px-4 py-2 rounded-lg flex items-center ${
                 page * itemsPerPage >= total
                   ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
-                  : 'bg-red-600 hover:bg-red-700 text-white'
+                  : 'bg-purple-600 hover:bg-purple-700 text-white'
               }`}
               whileHover={{ scale: page * itemsPerPage >= total ? 1 : 1.05 }}
               whileTap={{ scale: page * itemsPerPage >= total ? 1 : 0.95 }}
             >
               Next
+              <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
             </motion.button>
           </div>
         </div>
