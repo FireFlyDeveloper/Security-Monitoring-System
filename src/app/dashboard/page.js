@@ -12,7 +12,7 @@ export default function Dashboard() {
   const [showConfirmCalibrate, setShowConfirmCalibrate] = useState(null);
   const [editingDevice, setEditingDevice] = useState(null);
   const [newDevice, setNewDevice] = useState({ name: '', mac: '' });
-  const wsRef = useRef<WebSocket | null>(null);
+  const wsRef = useRef(null);
   const [messages, setMessages] = useState('');
 
   useEffect(() => {
@@ -46,7 +46,7 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    const ws = new WebSocket('wss://localhost:8080/status');
+    const ws = new WebSocket('ws://localhost:8080/status');
     wsRef.current = ws;
 
     ws.onopen = () => {
