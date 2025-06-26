@@ -80,7 +80,7 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     if (!isAuthenticated) return;
-    const interval = setInterval(refreshToken, 30 * 1000);
+    const interval = setInterval(refreshToken, 1800 * 1000);
     return () => clearInterval(interval);
   }, [isAuthenticated]);
 
