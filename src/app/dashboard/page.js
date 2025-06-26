@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Image from "next/image";
 import "../globals.css";
 import ActivityLogs from '../logs/page';
+import UserSettings from '../user/page';
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -677,6 +678,8 @@ export default function Dashboard() {
           )}
 
           { activeTab == 'logs' && <ActivityLogs /> }
+
+          { activeTab == 'users' && <UserSettings /> }
         </main>
       </div>
 
