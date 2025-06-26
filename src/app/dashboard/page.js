@@ -35,8 +35,11 @@ export default function Dashboard() {
 
     fetchDevices();
 
+    const intervalId = setInterval(fetchDevices, 5000);
+
     return () => {
       mounted = false;
+      clearInterval(intervalId);
     };
   }, []);
 
