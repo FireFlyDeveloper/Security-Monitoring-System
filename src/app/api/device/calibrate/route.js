@@ -6,16 +6,17 @@ export async function POST(request) {
     const { mac } = await request.json();
     const cookie = await cookies();
     const session = cookie.get("session");
-    const response = await fetch(`http://security.local:8080/api/position/update/${encodeURIComponent(mac)}`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": session ? `Bearer ${session.value}` : "",
-        }
+    const response = await fetch(`http://security.local:8080/api/position/train`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": session ? `Bearer ${session.value}` : "",
+      },
+      body: JSON.stringify({ mac: mac }),
     });
 
     if (!response.ok) {
-        return NextResponse.json({ error: "Failed to calibrate device" }, { status: response.status });
+      return NextResponse.json({ error: "Failed to calibrate device" }, { status: response.status });
     }
 
     return NextResponse.json({ message: "Devices calibrating successfully" }, { status: 200 });
