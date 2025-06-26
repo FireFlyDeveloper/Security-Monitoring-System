@@ -37,7 +37,7 @@ export default function Dashboard() {
 
     fetchDevices();
 
-    const intervalId = setInterval(fetchDevices, 5000);
+    const intervalId = setInterval(fetchDevices, 10000);
 
     return () => {
       mounted = false;
