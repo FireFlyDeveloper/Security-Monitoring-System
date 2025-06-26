@@ -5,7 +5,6 @@ import Image from "next/image";
 import "../globals.css";
 
 export default function Dashboard() {
-  const [isMounted, setIsMounted] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [devices, setDevices] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -25,6 +24,8 @@ export default function Dashboard() {
         if (response.ok) {
           const data = await response.json();
           setDevices(data.devices || []);
+
+          console.log(data.devices);
         } else {
           console.error('Failed to fetch devices:', response.statusText);
         }
@@ -92,17 +93,38 @@ export default function Dashboard() {
   };
 
   const addDevice = () => {
-    const newId = devices.length > 0 ? Math.max(...devices.map(d => d.id)) + 1 : 1;
-    setDevices([...devices, {
-      id: newId,
-      name: newDevice.name,
-      mac: newDevice.mac,
-      lastUpdated: 'Just added',
-      status: 'in-position',
-      monitoring: true
-    }]);
-    setNewDevice({ name: '', mac: '' });
-    setShowAddModal(false);
+    const requestAddDevice = async () => {
+      try {
+        const response = await fetch('/api/device/adddevice', {
+          method: 'POST',
+          body: JSON.stringify(newDevice),
+        });
+
+        if (!response.ok) {
+          alert('Failed to add device. Please try again.');
+        }
+
+        const data = await response.json();
+
+        for (const device of data.devices) {
+          setDevices([...devices, {
+            id: device.id,
+            name: device.name,
+            mac: device.mac,
+            lastUpdated: device.lastUpdated,
+            status: device.status,
+            monitoring: device.monitoring
+          }]);
+          setNewDevice({ name: '', mac: '' });
+          setShowAddModal(false);
+        }
+
+      } catch (error) {
+        console.error('Error adding device:', error);
+      }
+    }
+
+    requestAddDevice();
   };
 
   const resolveDevice = (id) => {
@@ -147,7 +169,7 @@ export default function Dashboard() {
       )
     },
     'critical': {
-      text: 'Critical: Not in Position',
+      text: 'Critical: Offline',
       color: 'bg-red-500/20 border-red-500 text-red-400',
       icon: (
         <motion.svg
@@ -180,6 +202,75 @@ export default function Dashboard() {
           transition={{ duration: 1 }}
         >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+        </motion.svg>
+      )
+    },
+    'not-configured': {
+      text: 'Not Configured',
+      color: 'bg-gray-500/20 border-gray-500 text-gray-400',
+      icon: (
+        <motion.svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-8 w-8"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          animate={{ opacity: [1, 0.5, 1] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </motion.svg>
+      )
+    },
+    'train': {
+      text: 'Training',
+      color: 'bg-purple-500/20 border-purple-500 text-purple-400',
+      icon: (
+        <motion.svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-8 w-8"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          animate={{ rotate: [0, 360] }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+        </motion.svg>
+      )
+    },
+    'training_initiated': {
+      text: 'Training Initiated',
+      color: 'bg-indigo-500/20 border-indigo-500 text-indigo-400',
+      icon: (
+        <motion.svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-8 w-8"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          animate={{ scale: [1, 1.05, 1] }}
+          transition={{ duration: 1, repeat: Infinity }}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </motion.svg>
+      )
+    },
+    'devices_refreshed': {
+      text: 'Devices Refreshed',
+      color: 'bg-teal-500/20 border-teal-500 text-teal-400',
+      icon: (
+        <motion.svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-8 w-8"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          animate={{ rotate: [0, -10, 10, 0] }}
+          transition={{ duration: 1.2, repeat: Infinity }}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
         </motion.svg>
       )
     }

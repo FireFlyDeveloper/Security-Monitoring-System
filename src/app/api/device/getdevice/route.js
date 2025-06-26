@@ -18,7 +18,7 @@ export async function GET() {
 
     const devices = await response.json();
 
-    return NextResponse.json({ devices  });
+    return NextResponse.json({ devices }, { status: 200 });
   } catch (error) {
     console.error("Error checking authentication:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
