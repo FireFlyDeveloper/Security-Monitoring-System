@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from "next/image";
 import "../globals.css";
@@ -12,6 +12,8 @@ export default function Dashboard() {
   const [showConfirmCalibrate, setShowConfirmCalibrate] = useState(null);
   const [editingDevice, setEditingDevice] = useState(null);
   const [newDevice, setNewDevice] = useState({ name: '', mac: '' });
+  const wsRef = useRef<WebSocket | null>(null);
+  const [messages, setMessages] = useState('');
 
   useEffect(() => {
     let mounted = true;
@@ -40,6 +42,32 @@ export default function Dashboard() {
     return () => {
       mounted = false;
       clearInterval(intervalId);
+    };
+  }, []);
+
+  useEffect(() => {
+    const ws = new WebSocket('wss://localhost:8080/status');
+    wsRef.current = ws;
+
+    ws.onopen = () => {
+      console.log('WebSocket connected');
+    };
+
+    ws.onmessage = (event) => {
+      console.log('Received:', event.data);
+      setMessages(event.data);
+    };
+
+    ws.onerror = (err) => {
+      console.error('WebSocket error:', err);
+    };
+
+    ws.onclose = () => {
+      console.log('WebSocket closed');
+    };
+
+    return () => {
+      ws.close();
     };
   }, []);
 
