@@ -134,11 +134,32 @@ export default function Dashboard() {
     removeDevice();
   };
 
-  const calibrateDevice = (id) => {
-    setDevices(devices.map(device =>
-      device.id === id ? { ...device, lastUpdated: 'Just now', status: 'in-position' } : device
-    ));
-    setShowConfirmCalibrate(null);
+  const calibrateDevice = async (id) => {
+    try {
+      const deviceToCalibrate = devices.find((device) => device.id === id);
+
+      if (!deviceToCalibrate) {
+        return alert("Device not found.");
+      }
+
+      const response = await fetch("/api/device/calibrate", {
+        method: "POST",
+        body: JSON.stringify({ mac: deviceToCalibrate.mac }),
+      });
+
+      if (!response.ok) {
+        return alert("Failed to calibrate device. Please try again.");
+      }
+
+      setDevices(devices.map(device =>
+        device.id === id
+          ? { ...device, lastUpdated: 'Just now', status: 'in-position' }
+          : device
+      ));
+      setShowConfirmCalibrate(null);
+    } catch (error) {
+      console.error('Error calibrating device:', error);
+    }
   };
 
   const saveEdit = () => {
