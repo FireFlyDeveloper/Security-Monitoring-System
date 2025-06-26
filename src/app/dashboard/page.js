@@ -45,7 +45,7 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    const ws = new WebSocket('ws://security.local:8080/status');
+    const ws = new WebSocket(`ws://localhost:8080/status`);
     wsRef.current = ws;
 
     ws.onopen = () => {
@@ -165,9 +165,12 @@ export default function Dashboard() {
   const saveEdit = () => {
     const updateDevice = async () => {
       try {
+        const deviceToUpdate = devices.find((device) => device.id === editingDevice.id);
+
         const response = await fetch('/api/device/update', {
           method: 'POST',
           body: JSON.stringify({
+            mac: deviceToUpdate.mac,
             name: editingDevice.name
           }),
         });

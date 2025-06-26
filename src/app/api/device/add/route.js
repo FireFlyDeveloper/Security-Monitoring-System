@@ -6,7 +6,7 @@ export async function POST(request) {
     const { name, mac } = await request.json();
     const cookie = await cookies();
     const session = cookie.get("session");
-    const response = await fetch("http://security.local:8080/api/devices/add-devices", {
+    const response = await fetch(`http://${process.env.API_URL}:8080/api/devices/add-devices`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

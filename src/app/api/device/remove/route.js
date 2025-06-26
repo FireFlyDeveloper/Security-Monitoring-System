@@ -6,7 +6,7 @@ export async function POST(request) {
     const { ids } = await request.json();
     const cookie = await cookies();
     const session = cookie.get("session");
-    const response = await fetch("http://security.local:8080/api/devices/delete-devices", {
+    const response = await fetch(`http://${process.env.API_URL}:8080/api/devices/delete-devices`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
