@@ -143,7 +143,7 @@ export default function ActivityLogs() {
       initial="hidden"
       animate="visible"
     >
-      <h2 className="text-2xl font-bold text-white mb-6 bg-gradient-to-r from-purple-600 to-blue-500 p-4 rounded-lg">
+      <h2 className="text-2xl font-bold text-white mb-6 p-4 rounded-lg">
         Activity Logs
       </h2>
 
