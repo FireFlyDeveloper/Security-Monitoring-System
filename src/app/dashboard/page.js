@@ -18,14 +18,12 @@ export default function Dashboard() {
 
     const fetchDevices = async () => {
       try {
-        const response = await fetch('/api/device/getdevice');
+        const response = await fetch('/api/device/get');
         if (!mounted) return;
 
         if (response.ok) {
           const data = await response.json();
           setDevices(data.devices || []);
-
-          console.log(data.devices);
         } else {
           console.error('Failed to fetch devices:', response.statusText);
         }
@@ -86,16 +84,33 @@ export default function Dashboard() {
   };
 
   const saveEdit = () => {
-    setDevices(devices.map(device =>
-      device.id === editingDevice.id ? { ...device, name: editingDevice.name } : device
-    ));
-    setEditingDevice(null);
+    const updateDevice = async () => {
+      try {
+        const response = await fetch('/api/devices/update', {
+          method: 'POST',
+          body: JSON.stringify({
+            name: editingDevice.name
+          }),
+        });
+
+        if (!response.ok) {
+          alert("Failed to edit device. Please try again.");
+        }
+
+        setDevices(devices.map(device =>
+          device.id === editingDevice.id ? { ...device, name: editingDevice.name } : device
+        ));
+        setEditingDevice(null);
+      } catch (error) {
+        console.error('Error editing device:', error);
+      }
+    };
   };
 
   const addDevice = () => {
     const requestAddDevice = async () => {
       try {
-        const response = await fetch('/api/device/adddevice', {
+        const response = await fetch('/api/device/add', {
           method: 'POST',
           body: JSON.stringify(newDevice),
         });
@@ -105,8 +120,7 @@ export default function Dashboard() {
         }
 
         const data = await response.json();
-
-        for (const device of data.devices) {
+        for (const device of data.device.devices) {
           setDevices([...devices, {
             id: device.id,
             name: device.name,
