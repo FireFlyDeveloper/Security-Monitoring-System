@@ -45,7 +45,7 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    const ws = new WebSocket('ws://localhost:8080/status');
+    const ws = new WebSocket('ws://security.local:8080/status');
     wsRef.current = ws;
 
     ws.onopen = () => {

@@ -19,7 +19,7 @@ export default function LoginPage() {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/auth/user", {
+      const response = await fetch("http://security.local:8080/auth/user", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -5,7 +5,7 @@ export async function GET() {
   try {
     const cookie = await cookies();
     const session = cookie.get("session");
-    const response = await fetch("http://localhost:8080/api/devices", {
+    const response = await fetch("http://security.local:8080/api/devices", {
         headers: {
             "Content-Type": "application/json",
             "Authorization": session ? `Bearer ${session.value}` : "",
