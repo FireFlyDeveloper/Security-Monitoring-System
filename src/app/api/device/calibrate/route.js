@@ -18,7 +18,7 @@ export async function POST(request) {
         return NextResponse.json({ error: "Failed to calibrate device" }, { status: response.status });
     }
 
-    return NextResponse.json({ message: "Devices removed successfully" }, { status: 200 });
+    return NextResponse.json({ message: "Devices calibrating successfully" }, { status: 200 });
   } catch (error) {
     console.error("Error checking authentication:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
