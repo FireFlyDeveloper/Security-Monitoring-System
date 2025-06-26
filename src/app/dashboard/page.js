@@ -72,8 +72,25 @@ export default function Dashboard() {
   };
 
   const removeDevice = (id) => {
-    setDevices(devices.filter(device => device.id !== id));
-    setShowConfirmRemove(null);
+    const removeDevice = async () => {
+      try {
+        const response = await fetch("/api/device/remove", {
+          method: "POST",
+          body: JSON.stringify({ ids: [ id ] }),
+        });
+
+        if (!response.ok) {
+          alert("Failed to remove device. Please try again.");
+        }
+
+        setDevices(devices.filter(device => device.id !== id));
+        setShowConfirmRemove(null);
+      } catch (error) {
+        console.error('Error removing device:', error);
+      }
+    }
+
+    removeDevice();
   };
 
   const calibrateDevice = (id) => {
@@ -105,6 +122,8 @@ export default function Dashboard() {
         console.error('Error editing device:', error);
       }
     };
+
+    updateDevice();
   };
 
   const addDevice = () => {
