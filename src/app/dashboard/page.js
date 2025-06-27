@@ -906,7 +906,7 @@ export default function Dashboard() {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.3 }}
                 >
-                  This will reset the laptop's position tracking. Make sure the laptop is in its correct position before calibrating.
+                  This will reset the laptop&apos;s position tracking. Make sure the laptop is in its correct position before calibrating.
                 </motion.p>
               </motion.div>
               <motion.div
