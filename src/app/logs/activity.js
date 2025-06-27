@@ -43,6 +43,12 @@ export default function ActivityLogs() {
     };
 
     fetchAlerts();
+
+    const intervalId = setInterval(fetchAlerts, 10000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
   }, [page, filterType, filterDate]);
 
   const handlePageChange = (newPage) => {
